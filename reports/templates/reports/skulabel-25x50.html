@@ -1,0 +1,31 @@
+{% extends "reports/layout.html"%}
+
+{%block c1%}
+
+
+    <div class="container">
+        <h2>Enter SKU and Quantity</h2>
+        
+        <form action="{% url 'sku25x50'%}" method='POST'>
+            {%csrf_token%}
+        <div class="row">
+            
+            <div class="col">
+                <label>SKU:</label>
+                <input type="text" class="form-control" id="sku" placeholder="Enter SKU" name="sku">
+            </div>
+            <div class="col">
+                <label>Quantity:</label>
+                <input type="text" class="form-control" placeholder="Enter Quantity" name="quantity">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+    </div>
+    
+{% endblock%}
+
+{%block c3%}
+<div class='container'></div>
+<div class='container'></div>
+{%endblock%}
