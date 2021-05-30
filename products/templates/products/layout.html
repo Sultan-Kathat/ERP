@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ERP- By Sultan</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {%block head%}
+    {%endblock%}
+    
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+      <!-- Brand -->
+      <a class="navbar-brand" href="{% url 'index'%}">ERP</a>
+
+        <!-- make navigation bar collapsable -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+
+      <!-- Links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'show' '1'%}">Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Add Product</a>
+        </li>
+
+        <!-- Dropdown - 1 -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+            More menu
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">Search Sku</a>
+            <a class="dropdown-item" href="{% url 'upload'%}">Upload Products</a>
+            <a class="dropdown-item" href="#">Download Pdf</a>
+          </div>
+        </li>
+
+        <!-- Dropdown - 2 -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              Dropdown-2
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#">Search Sku</a>
+              <a class="dropdown-item" href="#">Update Product</a>
+              <a class="dropdown-item" href="#">Download Pdf</a>
+            </div>
+          </li>
+      </ul>
+    </nav>
+    <br>
+    
+
+    {%block c1%}
+    {% endblock%}
+    
+
+    {%block c3%}
+    {%endblock%}
+
+
+
+    <div class="container p-3 my-3 bg-dark text-white text-center" >
+      Copyright @ 2021 Sultan
+
+    </div>
+  </body>
+</html>

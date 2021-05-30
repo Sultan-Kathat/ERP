@@ -1,0 +1,73 @@
+{% extends "products/layout.html"%}
+
+{%block head%}
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        //document.getElementById('mid').className= "page-item active";
+
+        if (document.getElementById('page_number').innerHTML=='1'){
+            document.getElementById('previous').className="btn btn-outline-primary disabled";
+        }
+        else{
+            document.getElementById('previous').className="btn btn-outline-primary";
+        }
+
+        if (document.getElementById('page_number').innerHTML ==document.getElementById('last_page').innerHTML){
+            document.getElementById('next').className="btn btn-outline-primary disabled";
+        }
+        else{
+            document.getElementById('next').className="btn btn-outline-primary";
+        }
+
+    })
+
+    
+</script>
+{%endblock%}
+
+     
+  
+{% block c1%}
+    <div class="container">
+        <div class="table-responsive">
+                
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <!-- <th>ID</th> -->
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Tax Code</th>
+                        <th>HSN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products%}
+                        <tr>
+                            <!-- <td>{{product.id}}</td> -->
+                            <td>{{product.sku}}</td>
+                            <td>{{product.name}}</td>
+                            <td>{{product.tax_code}}</td>
+                            <td>{{product.hsn}}</td>
+                        </tr> 
+                    {%empty%}
+                        No Data
+                    {% endfor%}
+                </tbody>
+            
+            
+            </table>
+        </div>
+    </div>  
+
+    <div class="container">
+        <a href="{% url 'show' page_id|add:'-1' %}" class="btn btn-outline-primary" id='previous' >Previous</a>
+        Page <b id='page_number'>{{page_id}}</b> out of <b id='last_page'>{{pages}}</b>
+        
+        <a href="{% url 'show' page_id|add:'1' %}" class="btn btn-outline-primary" id='next' >Next</a>
+    </div>
+
+
+    
+
+{%endblock%}

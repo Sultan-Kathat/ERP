@@ -1,0 +1,26 @@
+{% extends "products/layout.html"%}
+
+
+{% block c1%}
+<div class="container p-3 my-3 border">
+    <div>
+        Select the file to upload Product Data. File Format : Tab Delimited Text File (.txt)
+    </div>
+    <form action="{% url 'upload' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <input type="file" class="form-control-file border" name="file">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+</div>
+{% endblock %}
+
+
+{%block c3%}
+    {% if alert_message %}
+        <div class="alert alert-success">
+            <strong>{{alert_message}}</strong> Thanks for using Upload function.
+        </div>
+    {% endif %}
+{%endblock%}
