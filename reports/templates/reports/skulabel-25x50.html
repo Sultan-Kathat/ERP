@@ -1,31 +1,67 @@
 {% extends "reports/layout.html"%}
 
+
+{% block head%}
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){
+            
+           // var x = document.forms["sku_label"]["sku"].value;
+            
+            if (document.forms["sku_label"]["sku"].value == "" || document.forms["sku_label"]["quantity"].value == "" ) {
+                //alert("Name must be filled out");
+                
+                document.getElementById('submit_button').disabled = true;
+                //return false;
+            }      
+        })
+
+        document.addEventListener('keyup', ()=>{
+            if ((document.forms["sku_label"]["sku"].value == "") || (document.forms["sku_label"]["quantity"].value == "")) {
+                //alert("Name must be filled out");
+                document.getElementById('submit_button').disabled = true;
+                
+                //return false;
+            }    
+            else{
+                document.getElementById('submit_button').disabled = false;
+                
+            }
+        })
+        
+    </script>
+{% endblock %}
+
 {%block c1%}
 
 
     <div class="container">
         <h2>Enter SKU and Quantity</h2>
         
-        <form action="{% url 'sku25x50'%}" method='POST'>
+        <form action="{% url 'sku25x50'%}" method='POST' name="sku_label">
             {%csrf_token%}
         <div class="row">
             
             <div class="col">
-                <label>SKU:</label>
-                <input type="text" class="form-control" id="sku" placeholder="Enter SKU" name="sku">
+                <label><b>SKU:</b><small style="color:grey;">(Required:)</small></label>
+                <input type="text" class="form-control" id="sku" placeholder="Enter SKU" name="sku" required>
             </div>
             <div class="col">
-                <label>Quantity:</label>
-                <input type="text" class="form-control" placeholder="Enter Quantity" name="quantity">
+                <label><b>Quantity:</b><small style="color: grey;">(Required:)</small></label>
+                <input type="text" class="form-control" placeholder="Enter Quantity" name="quantity" required>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        <button type="submit" class="btn btn-primary mt-3" id="submit_button">Submit</button>
         </form>
     </div>
-    
+
 {% endblock%}
 
 {%block c3%}
-<div class='container'></div>
-<div class='container'></div>
+    {% if message%}
+        <div class="alert alert-danger">
+            <strong>Alert!</strong> {{message}} <a href="#" class="alert-link"></a>.
+        </div>
+    {%endif%}
+    <div class='container'></div>
+    <div class='container'></div>
 {%endblock%}

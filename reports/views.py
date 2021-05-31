@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponseRedirect
 from reportlab.pdfgen import canvas
 from reportlab.graphics.barcode import code39, code128, code93, createBarcodeDrawing
+from products.models import Product1
+from django.urls import reverse
 
 
 import io
@@ -19,8 +21,17 @@ def sku_label_25x50(request):
         sku = request.POST['sku']
         quantity = int(request.POST['quantity'])
 
+        if Product1.objects.filter(sku = sku).exists():
+            product = Product1.objects.get(sku = sku)
+            
+        else:
+            return render(request, "reports/skulabel-25x50.html",{
+                'message': "SKU does not exists in database"
+            })
+
         # Create a file-like buffer to receive PDF data.
-        font_size = 17
+        font_size = 20
+        font_size_barcode_caption = 9
         buffer = io.BytesIO()
 
         # Create the PDF object, using the buffer as its "file."
@@ -28,10 +39,12 @@ def sku_label_25x50(request):
         p.setPageSize((100*mm, 25*mm))
         # Draw things on the PDF. Here's where the PDF generation happens.
         # See the ReportLab documentation for the full list of functionality.
-        p.setFont('Helvetica', font_size)
+        
+        # p.rect(0*mm, 0*mm, 50*mm, 25*mm, fill=0)
+        # p.rect(50*mm, 0*mm, 50*mm, 25*mm, fill=0)
         
         #point to inch to mm conversion
-        # 1 pt = 1/72 inch = 0.03528 mm
+        # 1 pt = 1/72 inch = 0.3528 mm
 
         #relation between barcodewidth(total length including quiet white space) and barwidth
         #
@@ -39,12 +52,7 @@ def sku_label_25x50(request):
         #quiet space maximum of 0.25 inch(6.35 mm) and 10xbarwidth on one side total space is 2 times of the value
 
         #canvas.setFont('DarkGardenMK', 32)
-        text_len = p.stringWidth(sku, "Helvetica", font_size)*0.352778
-        print(text_len)
-        #text_len=text_len*0.352778
-        margin = (50-text_len)/2
-        if margin <= 5:
-            margin=5
+        
 
         barcode_length = 50
         #bar_width = len(sku)*0.015 
@@ -55,15 +63,37 @@ def sku_label_25x50(request):
         print(f"bar Width: -> {bar_width}")
         
         for x in range(quantity):
+
+            text_len = p.stringWidth(sku, "Helvetica", font_size)*0.3528
+            #print(text_len)
+            #text_len=text_len*0.352778
+            margin = (50-text_len)/2
+            if margin <= 5:
+                margin=5
+            p.setFont('Helvetica', font_size)
             p.drawString(margin*mm, 12.5*mm, sku)
             
             barcode128 = code128.Code128(value=sku,barWidth = bar_width*mm , barHeight = 12*mm) # barWidth = bar_width*mm barWidth = 0.3*mm
             print(f"barcode total width : {barcode128.width*0.352778}")
-            barcode128.drawOn(p, 45*mm, 3*mm)
+            barcode128.drawOn(p, 50*mm, 11.5*mm)
             print(f"lquiet: {barcode128.lquiet*0.352778}")
             print(f"rquiet: {barcode128.rquiet*0.352778}")
             print (f"Print Area:{(barcode128.width - (barcode128.lquiet + barcode128.rquiet))*0.352778}")
             
+            text_len = p.stringWidth(sku, "Helvetica", font_size_barcode_caption)*0.3528
+            margin = (50-text_len)/2+ 50
+            if margin <= 5:
+                margin=5
+            p.setFont('Helvetica', font_size_barcode_caption)
+            p.drawString(margin*mm, 7.5*mm, sku)
+            text_to_print = product.name
+            #text_to_print = text_to_print[:25]
+            for i in range(len(text_to_print)):
+                if p.stringWidth(text_to_print[:i], "Helvetica", font_size_barcode_caption)*0.3528 >= 44:
+                    text_to_print = text_to_print[:i]
+                    print(f"Final text: {text_to_print}")
+                    break
+            p.drawString(52*mm, 4*mm, f"{text_to_print}..")
 
             p.showPage()
             
