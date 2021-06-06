@@ -30,8 +30,8 @@ def sku_label_25x50(request):
             })
 
         # Create a file-like buffer to receive PDF data.
-        font_size = 20
-        font_size_barcode_caption = 9
+        font_size = 20 # fro big SKU print
+        font_size_barcode_caption = 9 # for caption printing belwo the barcode
         buffer = io.BytesIO()
 
         # Create the PDF object, using the buffer as its "file."
@@ -55,23 +55,40 @@ def sku_label_25x50(request):
         
 
         barcode_length = 50
-        #bar_width = len(sku)*0.015 
-        #bar_width = ((-0.03818)*(len(sku))-1)+0.18
-        #bar_width = ((-0.03818)*len(sku)) + 0.698
-        #bar_width = 0.29*mm
         bar_width = (barcode_length-12.70)/(11*len(sku)+35)
         print(f"bar Width: -> {bar_width}")
         
         for x in range(quantity):
 
-            text_len = p.stringWidth(sku, "Helvetica", font_size)*0.3528
-            #print(text_len)
-            #text_len=text_len*0.352778
-            margin = (50-text_len)/2
-            if margin <= 5:
-                margin=5
+            #text_len = p.stringWidth(sku, "Helvetica", font_size)*0.3528
             p.setFont('Helvetica', font_size)
-            p.drawString(margin*mm, 12.5*mm, sku)
+            text_to_print= sku
+            x_coordinate = 10
+            
+            if p.stringWidth(text_to_print, "Helvetica", font_size)*0.3528 > 40:
+                
+                for i in range(len(text_to_print)):
+                    if p.stringWidth(text_to_print[:i], "Helvetica", font_size)*0.3528 >= 40:
+                        # save the remaining text in 2nd variable
+                        text_to_print_2 = text_to_print[i:len(text_to_print)]
+                        #update the first variable with text till i character
+                        text_to_print = text_to_print[:i]
+                        
+                        print(f"Final SKU text to print: {text_to_print}")
+                        break
+                # print lower text first, 2nd part of the long SKU
+                margin = (50 - p.stringWidth(text_to_print_2, "Helvetica", font_size)*0.3528)/2
+                p.drawString(margin*mm, 6*mm, text_to_print_2)
+                # change x coordinate for upper text
+                x_coordinate = 14
+
+            #print upper FIRST part of SKU now
+            margin = (50 - p.stringWidth(text_to_print, "Helvetica", font_size)*0.3528)/2
+                    
+            p.drawString(margin*mm, x_coordinate*mm, text_to_print)
+
+            
+
             
             barcode128 = code128.Code128(value=sku,barWidth = bar_width*mm , barHeight = 12*mm) # barWidth = bar_width*mm barWidth = 0.3*mm
             print(f"barcode total width : {barcode128.width*0.352778}")
